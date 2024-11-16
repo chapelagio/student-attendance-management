@@ -1,0 +1,70 @@
+# student_attendance.py
+
+import datetime
+
+class Student:
+    def __init__(self, name, student_id):
+        self.name = name
+        self.student_id = student_id
+        self.attendance_records = []
+
+    def mark_attendance(self, date, status):
+        """Marks the attendance for a student on a given date.
+
+        Args:
+            date (datetime.date): The date of attendance.
+            status (str): The attendance status ("Present", "Absent", "Late").
+        """
+        self.attendance_records.append((date, status))
+
+    def get_attendance_summary(self):
+        """Returns a summary of the student's attendance."""
+        present_days = 0
+        absent_days = 0
+        late_days = 0
+        for date, status in self.attendance_records:
+            if status == "Present":
+                present_days += 1
+            elif status == "Absent":
+                absent_days += 1
+            elif status == "Late":
+                late_days += 1
+        return f"Present: {present_days}, Absent: {absent_days}, Late: {late_days}"
+
+class AttendanceSystem:
+    def __init__(self):
+        self.students = {}
+
+    def add_student(self, name, student_id):
+        """Adds a new student to the system."""
+        if student_id not in self.students:
+            self.students[student_id] = Student(name, student_id)
+        else:
+            print(f"Student with ID {student_id} already exists.")
+
+    def mark_attendance(self, student_id, date, status):
+        """Marks the attendance for a student."""
+        if student_id in self.students:
+            self.students[student_id].mark_attendance(date, status)
+        else:
+            print(f"Student with ID {student_id} not found.")
+
+    def get_attendance_report(self, student_id):
+        """Returns the attendance report for a student."""
+        if student_id in self.students:
+            return self.students[student_id].get_attendance_summary()
+        else:
+            print(f"Student with ID {student_id} not found.")
+
+# Example usage
+attendance_system = AttendanceSystem()
+
+attendance_system.add_student("John Doe", 12345)
+attendance_system.add_student("Jane Smith", 67890)
+
+attendance_system.mark_attendance(12345, datetime.date(2023, 10, 26), "Present")
+attendance_system.mark_attendance(12345, datetime.date(2023, 10, 27), "Absent")
+attendance_system.mark_attendance(67890, datetime.date(2023, 10, 26), "Late")
+
+print(attendance_system.get_attendance_report(12345))  # Output: Present: 1, Absent: 1, Late: 0
+print(attendance_system.get_attendance_report(67890))  # Output: Present: 0, Absent: 0, Late: 1
